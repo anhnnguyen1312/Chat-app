@@ -1,22 +1,28 @@
 {
   "name": "chat-app-reactjs",
   "version": "0.1.0",
+  "cometChatCustomConfig": {
+    "name": "cometchat-visual-builder-react",
+    "version": "1.0.10"
+  },
   "private": true,
   "dependencies": {
     "@cometchat-pro/chat": "^3.0.13",
     "@cometchat/calls-sdk-javascript": "^4.1.0",
     "@cometchat/chat-uikit-react": "^6.2.3",
+    "@tailwindcss/postcss": "^4.1.13",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/node": "^24.5.2",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.9.1",
     "react-scripts": "5.0.1",
-    "typescript": "^5.9.2",
+    "sweetalert": "^2.1.2",
+    "typescript": "^4.9.5",
+    "validator": "^13.15.15",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -47,10 +53,16 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@types/validator": "^13.15.3",
+    "autoprefixer": "^10.2.6",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
-    "prettier": "^3.6.2"
+    "postcss": "^8.3.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^2.2.19"
   }
 }

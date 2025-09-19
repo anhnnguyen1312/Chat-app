@@ -4,10 +4,13 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "node",
+        "resolveJsonModule": true,
+
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+  
   },
-  "include": ["src"]
+   "include": ["src", "custom.d.ts"]
 }

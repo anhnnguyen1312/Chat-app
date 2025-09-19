@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { CometChatSettings } from '../CometChatSettings';
-
+    // import pkg from '../../../package.json';
+import pkg from '../../../package.json'
 interface CometChatContextInterface {
   chatFeatures: CometChatSettingsInterface['chatFeatures'];
   callFeatures: CometChatSettingsInterface['callFeatures'];
@@ -197,9 +198,11 @@ let chatBuilderVersion = '1.0.10';
 
 (async () => {
   try {
-    const pkg = await import('../../../package.json');
-    chatBuilderName = pkg?.default?.cometChatCustomConfig.name ?? chatBuilderName;
-    chatBuilderVersion = pkg?.default?.cometChatCustomConfig.version ?? chatBuilderVersion;
+    // const pkg = await import('../../../package.json');
+    // chatBuilderName = pkg?.default?.cometChatCustomConfig.name ?? chatBuilderName;
+    // chatBuilderVersion = pkg?.default?.cometChatCustomConfig.version ?? chatBuilderVersion;
+      chatBuilderName = pkg?.cometChatCustomConfig.name ?? chatBuilderName;
+    chatBuilderVersion = pkg?.cometChatCustomConfig.version ?? chatBuilderVersion;
   } catch (e) {
     // fallback silently
   }
