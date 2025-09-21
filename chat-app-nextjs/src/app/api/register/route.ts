@@ -1,9 +1,9 @@
 // app/api/test/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Users } from '@/models/Users.model';
 import { initSequelize } from '@/lib/sequelize';
 import bcrypt from 'bcrypt';
+import { Users } from '@/models/Users.model';
 // import { v4 as uuidv4 } from 'uuid'; // Import UUID
 
 export async function GET() {
@@ -18,15 +18,12 @@ export async function GET() {
     //   email: 'vana@example.com',
     // });
     initSequelize();
-    if (global.sequelize && global.users) {
-      const users = await global.users.findAll({});
+      const users = await Users.findAll({});
       return NextResponse.json(
         { message: 'Get User success', ok: true, user: users },
         { headers: corsHeaders }
       );
-    } else {
-      return NextResponse.json({ message: 'fail', ok: false }, { headers: corsHeaders });
-    }
+    
     // const users = await Users.findAll({});
   } catch (error) {
     console.log('k thể sync db ', error);
@@ -57,10 +54,9 @@ export async function POST(req: NextRequest) {
     console.log(email, password);
 
     if (email && password) {
-      if (global.sequelize && global.users) {
         const hashedPassword = await bcrypt.hash(password, 10); // 10 là salt rounds
         const id = crypto.randomUUID();
-        const existingUser = await global.users.findOne({ where: { email } });
+        const existingUser = await Users.findOne({ where: { email } });
 
         if (existingUser) {
           return NextResponse.json(
@@ -94,7 +90,7 @@ export async function POST(req: NextRequest) {
         if (response.ok) {
           console.log(data.data.authToken);
 
-          const newUser = await global?.users?.create({
+          const newUser = await Users.create({
             id,
             email,
             password: hashedPassword,
@@ -116,7 +112,7 @@ export async function POST(req: NextRequest) {
             { status: 400, headers: corsHeaders }
           );
         }
-      }
+      
     } else {
       return NextResponse.json(
         { message: 'Invalid data', ok: false },

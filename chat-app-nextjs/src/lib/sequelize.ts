@@ -1,25 +1,19 @@
 import 'reflect-metadata';
 import { Sequelize } from 'sequelize-typescript';
-import path from 'path';
 import { Users } from '@/models/Users.model';
 
 import pg from 'pg';
 // Khởi tạo Sequelize instance
-declare global {
-  var sequelize: Sequelize | undefined;
-  //   var todos: typeof Todos | undefined;
-  // var projects: typeof Projects | undefined;
-  var users: typeof Users | undefined;
-}
 
+let sequelize: Sequelize | null = null;
 console.log('sequelize instance file loaded');
 
 export const initSequelize = async () => {
   console.log('initSequelize check!');
 
-  if (!global.sequelize) {
+  if (sequelize) {
     try {
-      const sequelize = new Sequelize({
+       sequelize = new Sequelize({
         dialect: 'postgres', // hoặc 'mysql', 'sqlite'
         host: 'aws-1-ap-southeast-1.pooler.supabase.com',
         port: 5432,
@@ -31,10 +25,7 @@ export const initSequelize = async () => {
         logging: false,
       }); // hoặc { force: true } nếu muốn drop bảng trước
 
-      global.sequelize = sequelize;
-      // global.todos = Todos
-      global.users = Users;
-      // global.projects = Projects
+     
 
       console.log('initSequelize done!');
     } catch (error) {

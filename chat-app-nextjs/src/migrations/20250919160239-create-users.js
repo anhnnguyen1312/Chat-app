@@ -47,7 +47,7 @@ module.exports = {
    * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
    */
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('Users');
 
     /**
