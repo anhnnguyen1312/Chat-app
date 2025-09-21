@@ -154,13 +154,16 @@ export default function Login() {
   const handleCallRegister = () => {
     const postDataRegister = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        const response = await fetch(
+          'https://chat-app-arud.onrender.com/api/register',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         const result = await response.json();
         if (result.ok) {
@@ -193,13 +196,16 @@ export default function Login() {
     const postDataLogin = async () => {
       try {
         console.log('fetch ne');
-        const response = await fetch('http://localhost:3000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(apiData),
-        });
+        const response = await fetch(
+          'https://chat-app-arud.onrender.com/api/login',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(apiData),
+          }
+        );
 
         const result = await response.json();
         console.log(result, 'result');

@@ -257,7 +257,10 @@ function ChatCustom() {
         onKeyDown={handleKeyDown}
         style={{ width: '80%', padding: 8 }}
       />
-      <button onClick={sendMessage} style={{ padding: '8px 16px', marginLeft: 10 }}>
+      <button
+        onClick={sendMessage}
+        style={{ padding: '8px 16px', marginLeft: 10 }}
+      >
         Send
       </button>
     </div>

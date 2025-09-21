@@ -15,7 +15,8 @@ const firebaseConfig = {
   messagingSenderId: '1017893369251',
   appId: '1:1017893369251:web:19cac2e028a239dfde5616',
   measurementId: 'G-ZT19TGZP33',
-  databaseURL:"https://chat-app-9bd60-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  databaseURL:
+    'https://chat-app-9bd60-default-rtdb.asia-southeast1.firebasedatabase.app/',
 };
 
 // Initialize Firebase
