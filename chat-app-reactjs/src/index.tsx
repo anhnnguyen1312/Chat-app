@@ -1,127 +1,130 @@
-// import React from "react";
-// import ReactDOM from "react-dom/client";
-// import App from "./App";
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import App from './App';
+// import './index.css'
 // import {
 //   UIKitSettingsBuilder,
 //   CometChatUIKit,
-// } from "@cometchat/chat-uikit-react";
-// import { setupLocalization } from "./CometChat/utils/utils";
-// import { CometChatProvider } from "./CometChat/context/CometChatContext";
+// } from '@cometchat/chat-uikit-react';
+// import { setupLocalization } from './CometChat/utils/utils';
+// import { CometChatProvider } from './CometChat/context/CometChatContext';
+// import { BrowserRouter, useNavigate } from 'react-router-dom';
 
 // export const COMETCHAT_CONSTANTS = {
-//   APP_ID: "1669024bacf5ec14d", // Replace with your App ID
-//   REGION: "IN", // Replace with your App Region
-//   AUTH_KEY: "1bf73ce66e2454c6a0975bbe3d1e2f14bf15537b", // Replace with your Auth Key or leave blank if you are authenticating using Auth Token
+//   APP_ID: '1669024bacf5ec14d',
+//   REGION: 'IN',
+//   AUTH_KEY: '1bf73ce66e2454c6a0975bbe3d1e2f14bf15537b',
 // };
 
-// const uiKitSettings = new UIKitSettingsBuilder()
-//   .setAppId(COMETCHAT_CONSTANTS.APP_ID)
-//   .setRegion(COMETCHAT_CONSTANTS.REGION)
-//   .setAuthKey(COMETCHAT_CONSTANTS.AUTH_KEY)
-//   .subscribePresenceForAllUsers()
-//   .build();
+// // Wrapper component để dùng navigate
+// const AppWrapper = () => {
+//   const navigate = useNavigate();
 
-// CometChatUIKit.init(uiKitSettings)?.then(() => {
-//   setupLocalization();
+//   React.useEffect(() => {
+//     const uiKitSettings = new UIKitSettingsBuilder()
+//       .setAppId(COMETCHAT_CONSTANTS.APP_ID)
+//       .setRegion(COMETCHAT_CONSTANTS.REGION)
+//       .setAuthKey(COMETCHAT_CONSTANTS.AUTH_KEY)
+//       .subscribePresenceForAllUsers()
+//       .build();
 
-//   const UID = "cometchat-uid-1"; // Replace with your actual UID
+//     CometChatUIKit.init(uiKitSettings)?.then(() => {
+//       setupLocalization();
 
-//   CometChatUIKit.getLoggedinUser().then((user: CometChat.User | null) => {
-//     if (!user) {
-//       CometChatUIKit.login(UID)
-//         .then((loggedUser: CometChat.User) => {
-//           console.log("Login Successful:", loggedUser);
-//           // Mount your app
-//           ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-//             <CometChatProvider>
-//               <App />
-//             </CometChatProvider>
-//           );
-//         })
-//         .catch((error) => {
-//                       console.error("Login Failed:", error)
+//       const UID = 'cometchat-uid-1';
 
-//         })
+//       CometChatUIKit.getLoggedinUser().then((user) => {
+//         if (!user) {
+//           CometChatUIKit.login(UID)
+//             .then((loggedUser) => {
+//               console.log('Login Successful:', loggedUser);
+//               // Nếu login OK thì không làm gì (ở lại route hiện tại)
+//             })
+//             .catch((error) => {
+//               console.error('Login Failed:', error);
+//               // 👉 Navigate đến trang /login
+//               navigate('/login');
+//             });
+//         } else {
+//           console.log('User already logged in:', user);
+//           // Không cần điều hướng
+//            //  navigate('/login');
+//         }
+//       });
+//     });
+//   }, []);
 
-//     } else {
-//       // User already logged in, mount app directly
-//       console.log("User already logged in:", user);
-//       ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-//         <CometChatProvider>
-//           <App />
-//         </CometChatProvider>
-//       );
-//     }
-//   });
-// });
-import React from 'react';
+//   return (
+//     <CometChatProvider>
+//       <App />
+//     </CometChatProvider>
+//   );
+// };
+
+// // Mount React app
+// ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+//   <React.StrictMode>
+//     <BrowserRouter>
+//       <AppWrapper />
+//     </BrowserRouter>
+//   </React.StrictMode>
+// );
+
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css'
 import {
   UIKitSettingsBuilder,
   CometChatUIKit,
 } from '@cometchat/chat-uikit-react';
 import { setupLocalization } from './CometChat/utils/utils';
-import { CometChatProvider } from './CometChat/context/CometChatContext';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
-
-export const COMETCHAT_CONSTANTS = {
+const COMETCHAT_CONSTANTS = {
   APP_ID: '1669024bacf5ec14d',
   REGION: 'IN',
   AUTH_KEY: '1bf73ce66e2454c6a0975bbe3d1e2f14bf15537b',
 };
+if (
+  COMETCHAT_CONSTANTS.APP_ID &&
+  COMETCHAT_CONSTANTS.AUTH_KEY &&
+  COMETCHAT_CONSTANTS.REGION
+) {
+  const uiKitSettings = new UIKitSettingsBuilder()
+    .setAppId(COMETCHAT_CONSTANTS.APP_ID)
+    .setRegion(COMETCHAT_CONSTANTS.REGION)
+    .setAuthKey(COMETCHAT_CONSTANTS.AUTH_KEY)
+    .subscribePresenceForAllUsers()
+    .build();
 
-// Wrapper component để dùng navigate
-const AppWrapper = () => {
-  const navigate = useNavigate();
+  // Initialize localization for the sample app and UI Kit.
+  // Pass a specific language code (e.g., 'en' for English, 'fr' for French)
+  // or leave it undefined to use the browser's default language.
+  setupLocalization();
 
-  React.useEffect(() => {
-    const uiKitSettings = new UIKitSettingsBuilder()
-      .setAppId(COMETCHAT_CONSTANTS.APP_ID)
-      .setRegion(COMETCHAT_CONSTANTS.REGION)
-      .setAuthKey(COMETCHAT_CONSTANTS.AUTH_KEY)
-      .subscribePresenceForAllUsers()
-      .build();
+  /*
+   * Note:
+   * If you need to update the localization strings for a specific language in the UI Kit,
+   * use the `CometChatLocalize.init` method. This allows you to override or add custom
+   * translations for a language. Here's an example:
+   *
+   * CometChatLocalize.init('fr', {
+   *     'fr': {
+   *         "CONTINUE": "Continuer",
+   *         "NAME": "Nom",
+   *     }
+   * });
+   *
+   * In this example, the French localization is updated with custom strings for "CONTINUE" and "NAME".
+   */
 
-    CometChatUIKit.init(uiKitSettings)?.then(() => {
-      setupLocalization();
-
-      const UID = 'cometchat-uid-1';
-
-      CometChatUIKit.getLoggedinUser().then((user) => {
-        if (!user) {
-          CometChatUIKit.login(UID)
-            .then((loggedUser) => {
-              console.log('Login Successful:', loggedUser);
-              // Nếu login OK thì không làm gì (ở lại route hiện tại)
-            })
-            .catch((error) => {
-              console.error('Login Failed:', error);
-              // 👉 Navigate đến trang /login
-              navigate('/login');
-            });
-        } else {
-          console.log('User already logged in:', user);
-          // Không cần điều hướng
-           //  navigate('/login');
-        }
-      });
-    });
-  }, []);
-
-  return (
-    <CometChatProvider>
-      <App />
-    </CometChatProvider>
+  CometChatUIKit.init(uiKitSettings)?.then((response) => {
+    console.log('CometChat UI Kit initialized successfully in index.tsx.');
+    const root = ReactDOM.createRoot(
+      document.getElementById('root') as HTMLElement
+    );
+    root.render(<App />);
+  });
+} else {
+  const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
   );
-};
-
-// Mount React app
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AppWrapper />
-    </BrowserRouter>
-  </React.StrictMode>
-);
+  root.render(<App />);
+}

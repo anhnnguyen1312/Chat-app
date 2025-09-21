@@ -25,6 +25,7 @@ import { AppContext } from '../../context/AppContext';
 import { useCometChatContext } from '../../context/CometChatContext';
 import { CallLog } from '@cometchat/calls-sdk-javascript';
 import { CometChatSettings } from '../../CometChatSettings';
+import { useNavigate } from "react-router-dom";
 
 interface SelectorProps {
   group?: CometChat.Group;
@@ -66,6 +67,7 @@ const CometChatSelector = (props: SelectorProps) => {
   const { setAppState } = useContext(AppContext);
   const { chatFeatures, callFeatures } = useCometChatContext();
   const getLoggedInUser = CometChatUIKitLoginListener.getLoggedInUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoggedInUser(getLoggedInUser);
@@ -155,6 +157,7 @@ const CometChatSelector = (props: SelectorProps) => {
     CometChatUIKit.logout()
       .then(() => {
         setLoggedInUser(null);
+        navigate('/login', { replace: true });
         setAppState({ type: 'resetAppState' });
       })
       .catch((error) => {

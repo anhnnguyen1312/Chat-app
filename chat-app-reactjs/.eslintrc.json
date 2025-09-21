@@ -4,6 +4,8 @@
     "es2021": true
   },
   "extends": [
+    "react-app",              // kế thừa cấu hình từ react-scripts, bao gồm TS support
+    "eslint:recommended",
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",

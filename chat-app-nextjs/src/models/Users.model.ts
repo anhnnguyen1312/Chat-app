@@ -35,4 +35,8 @@ export class Users extends Model {
   @AllowNull(true)
   @Column(DataType.STRING)
   avatar?: string;
+
+    @AllowNull(false)
+  @Column(DataType.STRING)
+  auth_token_chat?: string;
 }

@@ -1,21 +1,21 @@
 import React from 'react';
 type ButtonProps = {
-   icon? :string,
-  children:React.ReactNode; 
-  textColor?:string,
-  borderRounded?:string,
-  bgColor?:string,
-  custom?:string,
-  hovercolor?:string,
-  borderColor?:string,
-  onClick: () => void,
-  fullWidth?:boolean,
-  style?:string,
-  height?:string,
-  width?:string,
-  fullRounded ?:string,
-  title?:string,
-}
+  icon?: string;
+  children?: React.ReactNode;
+  textColor?: string;
+  borderRounded?: string;
+  bgColor?: string;
+  custom?: string;
+  hovercolor?: string;
+  borderColor?: string;
+  onClick: () => void;
+  fullWidth?: boolean;
+  style?: string;
+  height?: string;
+  width?: string;
+  fullRounded?: string;
+  title?: string;
+};
 const Button = ({
   icon,
   children,
@@ -32,7 +32,7 @@ const Button = ({
   width,
   fullRounded,
   title,
-}:ButtonProps) => {
+}: ButtonProps) => {
   return (
     <>
       <button

@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
         id: user.id,
         email: user.email,
         avatar: user.avatar,
+        auth_token_chat:user.auth_token_chat
       },
     }, { status: 200,headers: corsHeaders, });
         

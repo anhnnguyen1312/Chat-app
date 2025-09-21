@@ -23,6 +23,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      auth_token_chat: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
