@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { initSequelize } from '@/lib/sequelize';
+import { Users } from '@/models/Users.model';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*', // 👈 hoặc thay bằng domain cụ thể như 'http://localhost:3002'
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -18,7 +19,6 @@ export async function OPTIONS() {
 export async function POST(req: NextRequest) {
   try {
     initSequelize();
-    if (global.sequelize && global.users) {
       const { email, password } = await req.json();
 
       if (!email || !password) {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Tìm user theo email
-      const user = await global.users.findOne({ where: { email } });
+      const user = await Users.findOne({ where: { email } });
 
       if (!user) {
         return NextResponse.json(
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         },
         { status: 200, headers: corsHeaders }
       );
-    }
+    
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
