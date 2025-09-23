@@ -62,7 +62,7 @@ const ChatCustom = () => {
     if (!userDataLocal) {
       navigate('/login-firebase');
     }
-  }, [navigate]);
+  }, [navigate, userDataLocal]);
   const handleLogout = () => {
     localStorage.removeItem('user-chatCustom');
     navigate('/login-firebase'); // hoặc '/' tùy app bạn
@@ -85,7 +85,7 @@ const ChatCustom = () => {
     return () => {
       unsubscribe();
     };
-  }, [userData.id]);
+  }, []);
   const handleSelectUser = (user: User) => {
     setOtherUserData(user);
   };

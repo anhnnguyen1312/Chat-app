@@ -3,8 +3,6 @@ import { InputGroup, Button, LoadingTest } from '../Components';
 import '../index.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import swal from 'sweetalert';
-
-import validator from 'validator';
 import { CometChatUIKit } from '@cometchat/chat-uikit-react';
 import { database } from '../FireBase/config';
 import { ref, set } from 'firebase/database';
@@ -49,42 +47,21 @@ export default function Login({ cometChat }: LoginProps) {
       const key = i as keyof formDataType;
 
       if (formData[key] === '' && key !== 'confirmPassword') {
-        // console.log( key,key =="confirmPassword")
         setIsInvalid((prevState) => [
           ...prevState,
-          { name: i, msg: `bạn chưa nhập` },
+          {
+            name: i,
+            msg: `Please enter your ${i === 'email' ? 'name' : 'password'}`,
+          },
         ]);
         isInvalidCount = false;
       }
-      if (i === 'password' && isResgister) {
-        const resultValidatePassword = validator.isStrongPassword(formData[i]);
-        if (!resultValidatePassword) {
-          setIsInvalid((prevState) => [
-            ...prevState,
-            {
-              name: i,
-              msg: `mật khẩu phải có ít nhất: \n 8 kí tự, 1 kí tự đặc biệt, 1 chữ thường, 1 chữ in hoa`,
-            },
-          ]);
-          isInvalidCount = false;
-        }
-      }
+
       if (i === 'confirmPassword' && isResgister) {
         if (formData[i] !== formData['password']) {
           setIsInvalid((prevState) => [
             ...prevState,
-            { name: i, msg: `Mật khẩu xác nhận không đúng` },
-          ]);
-          isInvalidCount = false;
-        }
-      }
-
-      if (i === 'email') {
-        const resultValidateEmail = validator.isEmail(formData[i]);
-        if (!resultValidateEmail) {
-          setIsInvalid((prevState) => [
-            ...prevState,
-            { name: i, msg: `email không hợp lệ` },
+            { name: i, msg: `Passwords do not match` },
           ]);
           isInvalidCount = false;
         }
@@ -298,7 +275,7 @@ export default function Login({ cometChat }: LoginProps) {
       <div className="w-[30rem] min-h-28 px-6 py-8 text-center border-primary border rounded-sm m-6 self-center">
         {loading && <LoadingTest />}
         <h1 className="text-3xl font-[600] mb-[1rem]">
-          {isResgister ? 'Đăng ký' : 'Đăng nhập'}
+          {isResgister ? 'Register' : 'Login'}
         </h1>
         {isResgister ? (
           <p className="text-[1.2rem] leading-10 mb-2 mt-4 text-center font-light">
@@ -306,7 +283,7 @@ export default function Login({ cometChat }: LoginProps) {
           </p>
         ) : (
           <p className="text-[1.2rem] leading-10 mb-2 mt-4 text-center font-light">
-            Đăng nhập ngay để tìm được phòng ưng ý nhất ❤️
+            Login now to chat with other people ❤️
           </p>
         )}
 
@@ -317,8 +294,8 @@ export default function Login({ cometChat }: LoginProps) {
           typeInput={'email'}
           isInvalid={isInvalid}
           type={'text'}
-          labelChild={'Email'}
-          placeholder={'Mời bạn nhập Email'}
+          labelChild={'Username'}
+          placeholder={'Username'}
         />
 
         <InputGroup
@@ -328,8 +305,8 @@ export default function Login({ cometChat }: LoginProps) {
           type={'password'}
           typeInput={'password'}
           isInvalid={isInvalid}
-          labelChild={'Mật khẩu'}
-          placeholder={'Mời bạn nhập Mật khẩu'}
+          labelChild={'Password'}
+          placeholder={'Password'}
         />
 
         {isResgister && (
@@ -340,8 +317,8 @@ export default function Login({ cometChat }: LoginProps) {
             type={'password'}
             typeInput={'confirmPassword'}
             isInvalid={isInvalid}
-            labelChild={'Xác nhận mật khẩu'}
-            placeholder={'Nhập lại mật khẩu của bạn'}
+            labelChild={'confirm your password'}
+            placeholder={'confirm your password'}
           />
         )}
         <Button
@@ -352,7 +329,7 @@ export default function Login({ cometChat }: LoginProps) {
           fullWidth
           hovercolor={'hover:bgColor-primary_bold'}
         >
-          {isResgister ? 'Đăng ký' : 'Đăng nhập'}
+          {isResgister ? 'Register' : 'Login'}
         </Button>
 
         <div className="flex justify-between mt-4 text-primary">
@@ -361,7 +338,7 @@ export default function Login({ cometChat }: LoginProps) {
               onClick={handleLogIn}
               className="cursor-pointer text-primary hover:underline"
             >
-              Đăng nhập ngay
+              Login now!
             </p>
           ) : (
             <>
@@ -369,13 +346,7 @@ export default function Login({ cometChat }: LoginProps) {
                 onClick={handleSignIn}
                 className="cursor-pointer hover:underline text-primary"
               >
-                Bạn chưa có tài khoản?
-              </p>
-              <p
-                // onClick={handleForgotPassword}
-                className="cursor-pointer hover:underline text-primary"
-              >
-                Bạn quên mật khẩu ?
+                Don&apos;t have an account yet? Create one!
               </p>
             </>
           )}

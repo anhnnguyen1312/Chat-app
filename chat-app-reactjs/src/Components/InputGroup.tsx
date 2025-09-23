@@ -46,7 +46,7 @@ export default function InputGroup({
     <div className=" flex flex-col mb-2">
       <label
         htmlFor={typeInput}
-        className="text-left text-xl pb-[0.5rem] font-medium leading-7"
+        className="text-left text-md pb-[0.5rem] font-medium leading-7"
       >
         {labelChild}
       </label>
