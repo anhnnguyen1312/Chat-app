@@ -1,53 +1,53 @@
 import ConversationItem from './ConversationItem';
-const Conversation = () => {
-  const data = [
-    {
-      name: 'Rey Jhon',
-      time: 'just now',
-      message: 'Hey there! Are you finish creating the chat app?',
-      active: true,
-    },
-    {
-      name: 'Cherry Ann',
-      time: '12:00',
-      message: 'Hello? Are you available tonight?',
-      active: true,
-    },
-    {
-      name: 'Lalaine',
-      time: 'yesterday',
-      message: "I'm thingking of resigning",
-      active: false,
-    },
-    {
-      name: 'Princess',
-      time: '1 day ago',
-      message: 'I found a job :)',
-      active: false,
-    },
-    {
-      name: 'Charm',
-      time: '1 day ago',
-      message: 'Can you me some chocolates?',
-      active: false,
-    },
-    {
-      name: 'Garen',
-      time: '1 day ago',
-      message: "I'm the bravest of all kind",
-      active: true,
-    },
-  ];
+import { useEffect, useState } from 'react';
+import { database } from '../FireBase/config';
+import { ref, onValue } from 'firebase/database';
+interface ConversationType {
+  participantId: string;
+  participantName: string;
+  participantAvatar: string;
+  lastMessage: string;
+  lastTimestamp: number;
+}
+interface Props {
+  currentUserId: string;
+  onSelect: (userId: string) => void;
+}
+const Conversation = ({ currentUserId, onSelect }: Props) => {
+  const [conversations, setConversations] = useState<ConversationType[]>([]);
+  useEffect(() => {
+    console.log('useEffect run');
 
+    const convRef = ref(database, `conversations/${currentUserId}`);
+    const unsubscribe = onValue(convRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.values(data) as ConversationType[];
+        console.log('list', list);
+        setConversations(list);
+      } else {
+        setConversations([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentUserId]);
+  console.log('conversations', conversations);
+
+  const handleSelect = (participantId: string) => {
+    onSelect(participantId);
+  };
   return (
     <div className="p-1">
-      {data.map((item, index) => (
+      {conversations.map((item, index) => (
         <ConversationItem
-          message={item.message}
-          time={item.time}
-          name={item.name}
-          active={item.active}
+          participantId={item.participantId}
+          message={item.lastMessage}
+          //  time={item.time}
+          name={item.participantName}
+          //active={item.active}
           key={index}
+          handleSelect={handleSelect}
         />
       ))}
     </div>

@@ -1,0 +1,50 @@
+{
+  "users": {
+    "user1": {
+      "name": "Nguyễn Văn A",
+      "avatar": "https://i.pravatar.cc/150?u=user1"
+    },
+    "user2": {
+      "name": "Trần Văn B",
+      "avatar": "https://i.pravatar.cc/150?u=user2"
+    }
+  },
+  "conversations": {
+    "user1": {
+      "user2": {
+        "lastMessage": "Chào bạn!",
+        "lastTimestamp": 1695377334123,
+        "participantId": "user2",
+        "participantName": "Trần Văn B",
+        "participantAvatar": "https://i.pravatar.cc/150?u=user2"
+      }
+    },
+    "user2": {
+      "user1": {
+        "lastMessage": "Chào bạn!",
+        "lastTimestamp": 1695377334123,
+        "participantId": "user1",
+        "participantName": "Nguyễn Văn A",
+        "participantAvatar": "https://i.pravatar.cc/150?u=user1"
+      }
+    }
+  },
+  "messages": {
+    "user1_user2": {
+      "msg_001": {
+        "senderId": "user1",
+        "senderName": "Nguyễn Văn A",
+        "senderAvatar": "https://i.pravatar.cc/150?u=user1",
+        "text": "Xin chào!",
+        "timestamp": 1695377234123
+      },
+      "msg_002": {
+        "senderId": "user2",
+        "senderName": "Trần Văn B",
+        "senderAvatar": "https://i.pravatar.cc/150?u=user2",
+        "text": "Chào bạn!",
+        "timestamp": 1695377334123
+      }
+    }
+  }
+}

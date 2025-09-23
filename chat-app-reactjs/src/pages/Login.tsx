@@ -6,6 +6,8 @@ import swal from 'sweetalert';
 
 import validator from 'validator';
 import { CometChatUIKit } from '@cometchat/chat-uikit-react';
+import { database } from '../FireBase/config';
+import { ref, set, onValue } from 'firebase/database';
 type InvalidType = {
   name: string;
   msg: string;
@@ -17,7 +19,10 @@ type formDataType = {
   confirmPassword: string;
   avatar: string;
 };
-export default function Login() {
+type LoginProps = {
+  cometChat: boolean;
+};
+export default function Login({ cometChat }: LoginProps) {
   const useLocate = useLocation();
   const [isResgister, setIsRegister] = useState<boolean>(
     useLocate.state?.stateIsRegister
@@ -33,49 +38,10 @@ export default function Login() {
       'https://asset.cloudinary.com/dx3nwkh2i/7d1e9bf5e5c43ab5b11b4e0040ee34b9',
   });
   const navigate = useNavigate();
-
+  console.log('cometchat', cometChat);
   useEffect(() => {
     setIsRegister(useLocate.state?.stateIsRegister);
   }, [useLocate.state?.stateIsRegister]);
-  // useEffect(() => {
-  //   if (stateAuth.isLoggedIn) {
-  //     swal({
-  //       text: stateAuth.msg,
-  //       icon: "success",
-  //       timer: 2000,
-  //     });
-  //     stateAuth.data.role === "1"
-  //       ? usenavi(`system/manage-post-system`)
-  //       : usenavi(`${path.HOME}`);
-  //   }
-  // }, [stateAuth.isLoggedIn]);
-
-  // useEffect(() => {
-  //   if (stateAuth.msg) {
-  //     if (!stateAuth.isLoggedIn && !stateAuth.isLoggedOut) {
-  //       swal({
-  //         text: stateAuth.msg,
-  //         icon: "error",
-  //         timer: 2000,
-  //       });
-  //     }
-  //   }
-  // }, [stateAuth.msg, stateAuth.update]);
-
-  // useEffect(() => {
-  //   stateAuth.isCheckedEmail == "checked"
-  //     ? swal({
-  //         text: stateAuth.msg,
-  //         icon: "success",
-  //         timer: 2000,
-  //       })
-  //     : stateAuth.isCheckedEmail == "unChecked" &&
-  //       swal({
-  //         text: stateAuth.msg,
-  //         icon: "error",
-  //         timer: 2000,
-  //       });
-  // }, [stateAuth.isCheckedEmail]);
 
   const validate = (formData: formDataType) => {
     let isInvalidCount = true;
@@ -138,7 +104,23 @@ export default function Login() {
     });
     setIsInvalid([]);
   };
+  const addUserToFirebase = async (userId: string, name: string) => {
+    try {
+      console.log('userId:', userId);
+      console.log('name:', name);
+      const avatarUrl = `https://i.pravatar.cc/150?u=${userId}`;
+      const userRef = ref(database, `users/${userId}`);
 
+      await set(userRef, {
+        name,
+        avatar: avatarUrl,
+      });
+
+      navigate('/chat-custom');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleLogIn = () => {
     setIsRegister(false);
     setFormData({
@@ -154,16 +136,16 @@ export default function Login() {
   const handleCallRegister = () => {
     const postDataRegister = async () => {
       try {
-        const response = await fetch(
-          'https://chat-app-arud.onrender.com/api/register',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+        const urlHost = 'https://chat-app-arud.onrender.com/api/register';
+        const urlLocal = 'http://localhost:3000/api/register';
+
+        const response = await fetch(urlHost, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
 
         const result = await response.json();
         if (result.ok) {
@@ -173,7 +155,22 @@ export default function Login() {
             timer: 2000,
           });
 
-          handleLoginComet(result.user.id);
+          if (cometChat) {
+            //handle login comet
+            console.log('handleLoginComet');
+
+            await handleLoginComet(result.user.id);
+          } else {
+            /// handle add user to firebase
+            console.log('register to firebase');
+            const userId = result.user.id;
+            const name = result.user.email;
+            await addUserToFirebase(userId, name);
+            localStorage.setItem(
+              'user-chatCustom',
+              JSON.stringify(result.user)
+            );
+          }
         } else {
           swal({
             text: result.message,
@@ -195,17 +192,16 @@ export default function Login() {
     };
     const postDataLogin = async () => {
       try {
-        console.log('fetch ne');
-        const response = await fetch(
-          'https://chat-app-arud.onrender.com/api/login',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(apiData),
-          }
-        );
+        const urlHost = 'https://chat-app-arud.onrender.com/api/login';
+        const urlLocal = 'http://localhost:3000/api/login';
+
+        const response = await fetch(urlHost, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(apiData),
+        });
 
         const result = await response.json();
         console.log(result, 'result');
@@ -215,7 +211,22 @@ export default function Login() {
             icon: 'success',
             timer: 2000,
           });
-          await handleLoginComet(result.user.id);
+          if (cometChat) {
+            //handle login comet
+
+            await handleLoginComet(result.user.id);
+          } else {
+            /// handle add user to firebase
+            // const userId = result.user.id;
+            // const name = result.user.name;
+            // await addUserToFirebase(userId, name);
+            localStorage.setItem(
+              'user-chatCustom',
+              JSON.stringify(result.user)
+            );
+
+            navigate('/chat-custom');
+          }
         } else {
           swal({
             text: result.message,
@@ -232,7 +243,7 @@ export default function Login() {
   };
   const handleLoginComet = async (id: string) => {
     const cometUid = id;
-
+    //const cometUid ="cometchat-uid-2"
     const user = await CometChatUIKit.getLoggedinUser();
 
     if (!user) {
@@ -242,7 +253,7 @@ export default function Login() {
         })
         .catch((err) => {
           console.error('Login CometChat fail:', err);
-          navigate('/login');
+          navigate('/login-cometChat');
         });
     } else {
       console.log('CometChat user already logged in');
@@ -279,20 +290,14 @@ export default function Login() {
     }));
   };
   console.log('loading', loading);
-  const handleLogout = () => {
-    CometChatUIKit.logout().catch(console.error);
-  };
+  // const handleLogout = () => {
+  //   CometChatUIKit.logout().catch(console.error);
+  // };
   return (
     <div className="flex w-full h-full justify-center items-center ">
       <div className="w-[30rem] min-h-28 px-6 py-8 text-center border-primary border rounded-sm m-6 self-center">
         {loading && <LoadingTest />}
         <h1 className="text-3xl font-[600] mb-[1rem]">
-          <button
-            className="cursor-pointer hover:underline text-primary"
-            onClick={handleLogout}
-          >
-            đăng xuất
-          </button>
           {isResgister ? 'Đăng ký' : 'Đăng nhập'}
         </h1>
         {isResgister ? (

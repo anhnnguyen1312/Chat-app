@@ -1,14 +1,24 @@
 type TypeProps = {
-  active: boolean;
-  time: string;
+  active?: boolean;
+  time?: string;
   name: string;
   message: string;
+  handleSelect: (participantId: string) => void;
+  participantId: string;
 };
-const ConversationItem = ({ active, time, name, message }: TypeProps) => {
+const ConversationItem = ({
+  active,
+  time,
+  name,
+  message,
+  handleSelect,
+  participantId,
+}: TypeProps) => {
   const _class = active ? 'bg-gray-200' : 'bg-white';
   return (
     <div>
       <div
+        onClick={() => handleSelect(participantId)}
         className={
           'conversation-item p-1 dark:bg-gray-700 hover:bg-gray-200 m-1 rounded-md ' +
           _class

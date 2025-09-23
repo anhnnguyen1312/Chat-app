@@ -3,6 +3,8 @@ import { Sequelize } from 'sequelize-typescript';
 import { Users } from '@/models/Users.model';
 
 import pg from 'pg';
+// import { Conversation } from '@/models/Conversation.model';
+// import { Messages } from '@/models/Messages.model';
 // Khởi tạo Sequelize instance
 
 let sequelize: Sequelize | null = null;
@@ -11,7 +13,7 @@ console.log('sequelize instance file loaded');
 export const initSequelize = async () => {
   console.log('initSequelize check!');
 
-  if (sequelize) {
+  if (!sequelize) {
     try {
        sequelize = new Sequelize({
         dialect: 'postgres', // hoặc 'mysql', 'sqlite'
@@ -21,7 +23,9 @@ export const initSequelize = async () => {
         username: 'postgres.umoljsxpjqnywatylvrj',
         password: 'chatapp123aA@',
         database: 'postgres',
-        models: [Users], // Load tất cả models từ thư mục models
+           models: [Users], // Load tất cả models từ thư mục models
+
+       // models: [Users,Conversation,Messages], // Load tất cả models từ thư mục models
         logging: false,
       }); // hoặc { force: true } nếu muốn drop bảng trước
 

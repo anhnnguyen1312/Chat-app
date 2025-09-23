@@ -3,12 +3,13 @@ import CometChatApp from '../CometChat/CometChatApp';
 import { useNavigate } from 'react-router-dom';
 import { CometChatUIKit } from '@cometchat/chat-uikit-react';
 import { CometChatProvider } from '../CometChat/context/CometChatContext';
+
 function Chat() {
   const navigate = useNavigate();
   useEffect(() => {
     CometChatUIKit.getLoggedinUser().then((user) => {
       if (!user) {
-        navigate('/login');
+        navigate('/login-cometChat');
       }
     });
   }, [navigate]);

@@ -1,7 +1,101 @@
 import Conversation from '../Components/Conversation';
 import Messages from '../Components/Messages';
+// ConversationList.jsx
+import { useEffect, useState } from 'react';
+import { database } from '../FireBase/config';
+import { ref, onValue } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
+import UserSearch from '../Components/UserSearch';
 
+interface User {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+// const currentUser: User = {
+//   id: 'user1',
+//   name: 'Nguyễn Văn A',
+//   avatar: 'https://i.pravatar.cc/150?u=user1',
+// };
+
+const otherUserList: Record<string, User> = {
+  user2: {
+    id: '',
+    name: '',
+    avatar: '',
+  },
+};
+let data: User = {
+  id: '',
+  name: '',
+  avatar: '',
+};
+let userData: User = {
+  id: '',
+  name: '',
+  avatar: '',
+};
 const ChatCustom = () => {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [otherUserData, setOtherUserData] = useState<User>(data);
+
+  // const otherUser = selectedUserId ? otherUserList[selectedUserId] : null;
+  // const otherUser = null;
+  const navigate = useNavigate();
+  const rawUser = localStorage.getItem('user-chatCustom');
+  const userDataLocal = rawUser ? JSON.parse(rawUser) : null;
+
+  if (userDataLocal) {
+    userData = {
+      id: userDataLocal.id,
+      name: userDataLocal.email,
+      avatar: userDataLocal.avatar,
+    };
+  }
+  console.log('selectedUserId', selectedUserId);
+  console.log('otherUserData', otherUserData);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      const filtered = users.filter((u) => u.id === selectedUserId);
+      setOtherUserData(filtered[0]);
+    }
+  }, [selectedUserId, users]);
+
+  useEffect(() => {
+    console.log(userDataLocal, 'userDataLocal');
+    if (!userDataLocal) {
+      navigate('/login-firebase');
+    }
+  }, [navigate]);
+  const handleLogout = () => {
+    localStorage.removeItem('user-chatCustom');
+    navigate('/login-firebase'); // hoặc '/' tùy app bạn
+  };
+
+  useEffect(() => {
+    const usersRef = ref(database, 'users');
+
+    const unsubscribe = onValue(usersRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const userList: User[] = Object.entries(data).map(([id, user]) => ({
+        id,
+        ...(user as Omit<User, 'id'>),
+      }));
+
+      // const filtered = userList.filter((u) => u.id !== currentUser.id);
+      setUsers(userList);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userData.id]);
+  const handleSelectUser = (user: User) => {
+    setOtherUserData(user);
+  };
   return (
     <div className="">
       <div className="flex bg-white dark:bg-gray-900">
@@ -67,8 +161,10 @@ const ChatCustom = () => {
               </svg>
             </div>
           </div>
-          <div className="">
-            <svg
+          <div className="" onClick={handleLogout}>
+            {/* 
+             //iconsetting
+             // <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
               fill="none"
@@ -87,20 +183,35 @@ const ChatCustom = () => {
                 strokeWidth={2}
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
               />
+            </svg> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-gray-700 hover:text-red-600 transition"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+              />
             </svg>
           </div>
         </div>
         <div className="w-80 h-screen dark:bg-gray-800 bg-gray-100 p-2 hidden md:block">
           <div className="h-full overflow-y-auto">
-            <div className="text-xl font-extrabold text-gray-600 dark:text-gray-200 p-3">
-              Chikaa
+            <div className="text-md font-extrabold text-gray-600 dark:text-gray-200 p-1">
+              {userData.name}
             </div>
-            <div className="search-chat flex p-3">
+            <div className="search-chat flex p-1">
               <input
                 className="input text-gray-700 dark:text-gray-200 text-sm p-3 focus:outline-none bg-gray-200 dark:bg-gray-700  w-full rounded-l-md"
                 type="text"
                 placeholder="Search Messages"
               />
+
               <div className="bg-gray-200 dark:bg-gray-700 flex justify-center items-center pr-3 text-gray-400 rounded-r-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -118,14 +229,29 @@ const ChatCustom = () => {
                 </svg>
               </div>
             </div>
+            <div className="flex p-1 flex-col gap-[10px]">
+              {/* <input
+                            className="input text-gray-700 dark:text-gray-200 text-sm p-3 focus:outline-none bg-gray-200 dark:bg-gray-700  w-full rounded-l-md"
+                            type="text"
+                            placeholder="Search Messages"
+                          /> */}
+              <UserSearch users={users} onSelectUser={handleSelectUser} />
+            </div>
             <div className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3">
               Recent
             </div>
-            <Conversation />
+            {userData.id && (
+              <Conversation
+                currentUserId={userData.id}
+                onSelect={setSelectedUserId}
+              />
+            )}
           </div>
         </div>
         <div className="flex-grow  h-screen p-2 rounded-md">
-          <Messages />
+          {otherUserData.id && userData.id && (
+            <Messages currentUser={userData} otherUser={otherUserData} />
+          )}
         </div>
       </div>
     </div>

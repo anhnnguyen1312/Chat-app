@@ -10,7 +10,9 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Chat />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login-firebase" element={<Login cometChat={false} />} />
+        <Route path="/login-cometChat" element={<Login cometChat={true} />} />
+
         <Route path="/chat-custom-firebase" element={<ChatCustomFireBase />} />
         <Route path="/chat-custom" element={<ChatCustom />} />
       </Routes>
