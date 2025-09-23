@@ -27,11 +27,9 @@ function UserSearch({ users, onSelectUser }: UserSearchProps) {
       getOptionLabel={(option) => option.name}
       value={value}
       onChange={(event, newValue) => {
-      
         if (newValue) {
           onSelectUser(newValue);
-
-   setValue(null);
+          setValue(null);
         }
       }}
       inputValue={inputValue}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { database } from '../FireBase/config';
 import { ref, onValue, push, set, update } from 'firebase/database';
 interface User {
@@ -86,14 +86,14 @@ const Messages = ({ currentUser, otherUser }: Props) => {
     setText('');
   };
   const formatTimestamp = (ts: number): string => {
-  return new Date(ts).toLocaleString("vi-VN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
+    return new Date(ts).toLocaleString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
   console.log('message cpn');
   console.log('message ', messages);
 
@@ -181,7 +181,9 @@ const Messages = ({ currentUser, otherUser }: Props) => {
                   <div className="text-gray-700 dark:text-gray-200">
                     {msg.text}
                   </div>
-                  <div className="text-xs text-gray-400">{formatTimestamp(msg.timestamp)}</div>
+                  <div className="text-xs text-gray-400">
+                    {formatTimestamp(msg.timestamp)}
+                  </div>
                 </div>
               </div>
             );
@@ -241,7 +243,7 @@ const Messages = ({ currentUser, otherUser }: Props) => {
               placeholder="Type your message ..."
               value={text}
               onChange={(e) => setText(e.target.value)}
-               onKeyDown={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault(); // ngăn reload nếu form
                   sendMessage();
@@ -250,7 +252,6 @@ const Messages = ({ currentUser, otherUser }: Props) => {
             />
             <div
               onClick={sendMessage}
-             
               className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200  flex justify-center items-center pr-3 text-gray-400 rounded-r-md"
             >
               <svg

@@ -19,13 +19,6 @@ interface User {
 //   avatar: 'https://i.pravatar.cc/150?u=user1',
 // };
 
-const otherUserList: Record<string, User> = {
-  user2: {
-    id: '',
-    name: '',
-    avatar: '',
-  },
-};
 let data: User = {
   id: '',
   name: '',

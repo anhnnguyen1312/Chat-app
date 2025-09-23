@@ -7,7 +7,7 @@ import swal from 'sweetalert';
 import validator from 'validator';
 import { CometChatUIKit } from '@cometchat/chat-uikit-react';
 import { database } from '../FireBase/config';
-import { ref, set, onValue } from 'firebase/database';
+import { ref, set } from 'firebase/database';
 type InvalidType = {
   name: string;
   msg: string;
@@ -137,7 +137,7 @@ export default function Login({ cometChat }: LoginProps) {
     const postDataRegister = async () => {
       try {
         const urlHost = 'https://chat-app-arud.onrender.com/api/register';
-        const urlLocal = 'http://localhost:3000/api/register';
+        // const urlLocal = 'http://localhost:3000/api/register';
 
         const response = await fetch(urlHost, {
           method: 'POST',
@@ -193,7 +193,7 @@ export default function Login({ cometChat }: LoginProps) {
     const postDataLogin = async () => {
       try {
         const urlHost = 'https://chat-app-arud.onrender.com/api/login';
-        const urlLocal = 'http://localhost:3000/api/login';
+        // const urlLocal = 'http://localhost:3000/api/login';
 
         const response = await fetch(urlHost, {
           method: 'POST',
