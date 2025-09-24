@@ -10,23 +10,18 @@
     }
   },
   "conversations": {
-    "user1": {
-      "user2": {
-        "lastMessage": "Chào bạn!",
-        "lastTimestamp": 1695377334123,
-        "participantId": "user2",
-        "participantName": "Trần Văn B",
-        "participantAvatar": "https://i.pravatar.cc/150?u=user2"
-      }
+    "group_groupid123": {
+      "type": "group",
+      "groupName": "Team A",
+      "members": ["user1", "user2"],
+      "lastMessage": "...",
+      "lastTimestamp": 1695377334123
     },
-    "user2": {
-      "user1": {
-        "lastMessage": "Chào bạn!",
-        "lastTimestamp": 1695377334123,
-        "participantId": "user1",
-        "participantName": "Nguyễn Văn A",
-        "participantAvatar": "https://i.pravatar.cc/150?u=user1"
-      }
+    "user1_user2": {
+      "type": "private",
+      "members": ["user1", "user2"],
+      "lastMessage": "...",
+      "lastTimestamp": 1695377334123
     }
   },
   "messages": {
@@ -44,6 +39,15 @@
         "senderAvatar": "https://i.pravatar.cc/150?u=user2",
         "text": "Chào bạn!",
         "timestamp": 1695377334123
+      }
+    },
+    "group_groupid123": {
+      "msg_001": {
+        "senderId": "user1",
+        "senderName": "Nguyễn Văn A",
+        "senderAvatar": "https://i.pravatar.cc/150?u=user1",
+        "text": "Xin chào!",
+        "timestamp": 1695377234123
       }
     }
   }

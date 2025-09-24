@@ -157,7 +157,7 @@ const CometChatSelector = (props: SelectorProps) => {
     CometChatUIKit.logout()
       .then(() => {
         setLoggedInUser(null);
-        navigate('/login', { replace: true });
+        navigate('/login-cometChat', { replace: true });
         setAppState({ type: 'resetAppState' });
       })
       .catch((error) => {

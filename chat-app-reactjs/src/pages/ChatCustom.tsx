@@ -6,18 +6,14 @@ import { database } from '../FireBase/config';
 import { ref, onValue } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 import UserSearch from '../Components/UserSearch';
+import { Button } from '@mui/material';
+import CreateGroupModal from '../Components/CreateGroupModal';
 
 interface User {
   id: string;
   name: string;
   avatar: string;
 }
-
-// const currentUser: User = {
-//   id: 'user1',
-//   name: 'Nguyễn Văn A',
-//   avatar: 'https://i.pravatar.cc/150?u=user1',
-// };
 
 let data: User = {
   id: '',
@@ -29,26 +25,41 @@ let userData: User = {
   name: '',
   avatar: '',
 };
+interface UIConversationItem {
+  id: string;
+  participantId: string;
+  participantName: string;
+  participantAvatar?: string;
+  lastMessage: string;
+  lastTimestamp: number;
+}
+let conver: UIConversationItem = {
+  id: '',
+  participantId: '',
+  participantName: '',
+  participantAvatar: '',
+  lastMessage: '',
+  lastTimestamp: 0,
+};
 const ChatCustom = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [otherUserData, setOtherUserData] = useState<User>(data);
+  const [openGroupModal, setOpenGroupModal] = useState<boolean>(false);
+  const [cond, setCond] = useState<UIConversationItem>(conver);
 
-  // const otherUser = selectedUserId ? otherUserList[selectedUserId] : null;
-  // const otherUser = null;
   const navigate = useNavigate();
   const rawUser = localStorage.getItem('user-chatCustom');
   const userDataLocal = rawUser ? JSON.parse(rawUser) : null;
 
-  if (userDataLocal) {
+  if (userDataLocal.id) {
     userData = {
       id: userDataLocal.id,
       name: userDataLocal.email,
       avatar: userDataLocal.avatar,
     };
   }
-  console.log('selectedUserId', selectedUserId);
-  console.log('otherUserData', otherUserData);
+  console.log('userData', userData);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -58,14 +69,13 @@ const ChatCustom = () => {
   }, [selectedUserId, users]);
 
   useEffect(() => {
-    console.log(userDataLocal, 'userDataLocal');
     if (!userDataLocal) {
       navigate('/login-firebase');
     }
   }, [navigate, userDataLocal]);
   const handleLogout = () => {
     localStorage.removeItem('user-chatCustom');
-    navigate('/login-firebase'); // hoặc '/' tùy app bạn
+    navigate('/login-firebase');
   };
 
   useEffect(() => {
@@ -78,7 +88,6 @@ const ChatCustom = () => {
         ...(user as Omit<User, 'id'>),
       }));
 
-      // const filtered = userList.filter((u) => u.id !== currentUser.id);
       setUsers(userList);
     });
 
@@ -155,28 +164,6 @@ const ChatCustom = () => {
             </div>
           </div>
           <div className="" onClick={handleLogout}>
-            {/* 
-             //iconsetting
-             // <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg> */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 text-gray-700 hover:text-red-600 transition"
@@ -222,14 +209,22 @@ const ChatCustom = () => {
                 </svg>
               </div>
             </div>
-            <div className="flex p-1 flex-col gap-[10px]">
-              {/* <input
-                            className="input text-gray-700 dark:text-gray-200 text-sm p-3 focus:outline-none bg-gray-200 dark:bg-gray-700  w-full rounded-l-md"
-                            type="text"
-                            placeholder="Search Messages"
-                          /> */}
+            <div className="flex p-1 flex-col gap-2">
               <UserSearch users={users} onSelectUser={handleSelectUser} />
+              <Button
+                variant="contained"
+                onClick={() => setOpenGroupModal(true)}
+              >
+                Tạo Nhóm
+              </Button>
+              <CreateGroupModal
+                open={openGroupModal}
+                onClose={() => setOpenGroupModal(false)}
+                users={users}
+                currentUser={userData}
+              />
             </div>
+
             <div className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3">
               Recent
             </div>
@@ -237,13 +232,18 @@ const ChatCustom = () => {
               <Conversation
                 currentUserId={userData.id}
                 onSelect={setSelectedUserId}
+                setCond={setCond}
               />
             )}
           </div>
         </div>
         <div className="flex-grow  h-screen p-2 rounded-md">
-          {otherUserData.id && userData.id && (
-            <Messages currentUser={userData} otherUser={otherUserData} />
+          {(cond.id || otherUserData.id) && userData.id && (
+            <Messages
+              currentUser={userData}
+              otherUser={otherUserData}
+              cond={cond}
+            />
           )}
         </div>
       </div>

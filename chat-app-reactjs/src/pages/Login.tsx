@@ -6,6 +6,7 @@ import swal from 'sweetalert';
 import { CometChatUIKit } from '@cometchat/chat-uikit-react';
 import { database } from '../FireBase/config';
 import { ref, set } from 'firebase/database';
+import validator from 'validator';
 type InvalidType = {
   name: string;
   msg: string;
@@ -36,7 +37,6 @@ export default function Login({ cometChat }: LoginProps) {
       'https://asset.cloudinary.com/dx3nwkh2i/7d1e9bf5e5c43ab5b11b4e0040ee34b9',
   });
   const navigate = useNavigate();
-  console.log('cometchat', cometChat);
   useEffect(() => {
     setIsRegister(useLocate.state?.stateIsRegister);
   }, [useLocate.state?.stateIsRegister]);
@@ -51,10 +51,33 @@ export default function Login({ cometChat }: LoginProps) {
           ...prevState,
           {
             name: i,
-            msg: `Please enter your ${i === 'email' ? 'name' : 'password'}`,
+            msg: `Please enter your ${i}`,
           },
         ]);
         isInvalidCount = false;
+      }
+      if (i === 'password' && isResgister) {
+        const resultValidatePassword = validator.isStrongPassword(formData[i]);
+        if (!resultValidatePassword) {
+          setIsInvalid((prevState) => [
+            ...prevState,
+            {
+              name: i,
+              msg: `The password must contain at least: \n 8 characters, 1 special character, 1 lowercase letter, 1 uppercase letter`,
+            },
+          ]);
+          isInvalidCount = false;
+        }
+      }
+      if (i === 'email') {
+        const resultValidateEmail = validator.isEmail(formData[i]);
+        if (!resultValidateEmail) {
+          setIsInvalid((prevState) => [
+            ...prevState,
+            { name: i, msg: `email không hợp lệ` },
+          ]);
+          isInvalidCount = false;
+        }
       }
 
       if (i === 'confirmPassword' && isResgister) {
@@ -83,8 +106,6 @@ export default function Login({ cometChat }: LoginProps) {
   };
   const addUserToFirebase = async (userId: string, name: string) => {
     try {
-      console.log('userId:', userId);
-      console.log('name:', name);
       const avatarUrl = `https://i.pravatar.cc/150?u=${userId}`;
       const userRef = ref(database, `users/${userId}`);
 
@@ -134,12 +155,10 @@ export default function Login({ cometChat }: LoginProps) {
 
           if (cometChat) {
             //handle login comet
-            console.log('handleLoginComet');
 
             await handleLoginComet(result.user.id);
           } else {
             /// handle add user to firebase
-            console.log('register to firebase');
             const userId = result.user.id;
             const name = result.user.email;
             await addUserToFirebase(userId, name);
@@ -193,10 +212,6 @@ export default function Login({ cometChat }: LoginProps) {
 
             await handleLoginComet(result.user.id);
           } else {
-            /// handle add user to firebase
-            // const userId = result.user.id;
-            // const name = result.user.name;
-            // await addUserToFirebase(userId, name);
             localStorage.setItem(
               'user-chatCustom',
               JSON.stringify(result.user)
@@ -238,24 +253,19 @@ export default function Login({ cometChat }: LoginProps) {
     }
   };
   const handleSubmit = async () => {
-    console.log('submit click');
     setLoading(true);
 
     let checkValidate = validate(formData);
 
     if (checkValidate) {
-      console.log('validate true');
       if (isResgister) {
-        handleCallRegister();
+        await handleCallRegister();
       } else {
-        handleCallLogin();
+        await handleCallLogin();
       }
-
-      setLoading(false);
     }
     setLoading(false);
   };
-  console.log('formData', formData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -266,7 +276,6 @@ export default function Login({ cometChat }: LoginProps) {
       [typeInput]: e.target.value,
     }));
   };
-  console.log('loading', loading);
   // const handleLogout = () => {
   //   CometChatUIKit.logout().catch(console.error);
   // };
@@ -294,8 +303,8 @@ export default function Login({ cometChat }: LoginProps) {
           typeInput={'email'}
           isInvalid={isInvalid}
           type={'text'}
-          labelChild={'Username'}
-          placeholder={'Username'}
+          labelChild={'Email'}
+          placeholder={'Email'}
         />
 
         <InputGroup

@@ -1,12 +1,22 @@
+interface UIConversationItem {
+  id: string;
+  participantId: string;
+  participantName: string;
+  participantAvatar?: string;
+  lastMessage: string;
+  lastTimestamp: number;
+}
 type TypeProps = {
+  item: UIConversationItem;
   active?: boolean;
   time?: string;
   name: string;
   message: string;
-  handleSelect: (participantId: string) => void;
+  handleSelect: (cond: UIConversationItem) => void;
   participantId: string;
 };
 const ConversationItem = ({
+  item,
   active,
   time,
   name,
@@ -18,7 +28,7 @@ const ConversationItem = ({
   return (
     <div>
       <div
-        onClick={() => handleSelect(participantId)}
+        onClick={() => handleSelect(item)}
         className={
           'conversation-item p-1 dark:bg-gray-700 hover:bg-gray-200 m-1 rounded-md ' +
           _class

@@ -15,10 +15,6 @@ interface UserSearchProps {
 function UserSearch({ users, onSelectUser }: UserSearchProps) {
   const [value, setValue] = useState<User | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
-
-  console.log('value', value);
-  console.log('inputValue', inputValue);
-
   return (
     <Autocomplete
       sx={{ width: 'full' }}
@@ -29,7 +25,7 @@ function UserSearch({ users, onSelectUser }: UserSearchProps) {
       onChange={(event, newValue) => {
         if (newValue) {
           onSelectUser(newValue);
-          setValue(null);
+          setValue(newValue);
         }
       }}
       inputValue={inputValue}
@@ -43,7 +39,6 @@ function UserSearch({ users, onSelectUser }: UserSearchProps) {
           style={{ display: 'flex', alignItems: 'center' }}
         >
           <img
-            // src={option.avatar}
             src="https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027366_960_720.png"
             alt=""
             style={{
