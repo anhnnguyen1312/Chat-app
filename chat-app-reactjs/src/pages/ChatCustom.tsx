@@ -9,11 +9,7 @@ import UserSearch from '../Components/UserSearch';
 import { Button } from '@mui/material';
 import CreateGroupModal from '../Components/CreateGroupModal';
 
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
-}
+import { UIConversationItem, User } from '../types';
 
 let data: User = {
   id: '',
@@ -25,14 +21,7 @@ let userData: User = {
   name: '',
   avatar: '',
 };
-interface UIConversationItem {
-  id: string;
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
-  lastMessage: string;
-  lastTimestamp: number;
-}
+
 let conver: UIConversationItem = {
   id: '',
   participantId: '',
@@ -52,14 +41,13 @@ const ChatCustom = () => {
   const rawUser = localStorage.getItem('user-chatCustom');
   const userDataLocal = rawUser ? JSON.parse(rawUser) : null;
 
-  if (userDataLocal.id) {
+  if (userDataLocal) {
     userData = {
       id: userDataLocal.id,
       name: userDataLocal.email,
       avatar: userDataLocal.avatar,
     };
   }
-  console.log('userData', userData);
 
   useEffect(() => {
     if (selectedUserId) {

@@ -1,37 +1,30 @@
-interface UIConversationItem {
-  id: string;
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
-  lastMessage: string;
-  lastTimestamp: number;
-}
+import { UIConversationItem } from '../types';
 type TypeProps = {
   item: UIConversationItem;
-  active?: boolean;
-  time?: string;
-  name: string;
-  message: string;
+
   handleSelect: (cond: UIConversationItem) => void;
-  participantId: string;
 };
+
 const ConversationItem = ({
   item,
-  active,
-  time,
-  name,
-  message,
+
   handleSelect,
-  participantId,
 }: TypeProps) => {
-  const _class = active ? 'bg-gray-200' : 'bg-white';
+  const formatTimestamp = (ts: number): string => {
+    return new Date(ts).toLocaleString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
   return (
     <div>
       <div
         onClick={() => handleSelect(item)}
         className={
-          'conversation-item p-1 dark:bg-gray-700 hover:bg-gray-200 m-1 rounded-md ' +
-          _class
+          ' bg-white conversation-item p-1 dark:bg-gray-700 hover:bg-gray-200 m-1 rounded-md '
         }
       >
         <div className={'flex items-center p-2  cursor-pointer '}>
@@ -45,14 +38,14 @@ const ConversationItem = ({
           <div className="flex-grow p-2">
             <div className="flex justify-between text-md ">
               <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                {name}
-              </div>
-              <div className="text-xs text-gray-400 dark:text-gray-300">
-                {time}
+                {item.participantName}
               </div>
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400  w-40 truncate">
-              {message}
+              {item.lastMessage}
+            </div>
+            <div className="text-xs text-gray-400 dark:text-gray-300">
+              {formatTimestamp(item.lastTimestamp)}
             </div>
           </div>
         </div>

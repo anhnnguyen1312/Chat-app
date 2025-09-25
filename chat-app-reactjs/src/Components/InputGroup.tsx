@@ -3,12 +3,7 @@ type InvalidType = {
   name: string;
   msg: string;
 };
-// type formDataType ={
-//   phone: string,
-//     name: string,
-//     email: string,
-//     password: string,
-//     avatar:string  }
+
 type InputProps = {
   setIsInvalid: (val: InvalidType[]) => void;
   type: 'text' | 'password';
@@ -32,13 +27,6 @@ export default function InputGroup({
   typeInput,
   isInvalid,
 }: InputProps) {
-  console.log('typeInput', typeInput);
-  console.log('isInvalid', isInvalid);
-
-  console.log('value', value);
-  // const handleFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setFormData((prevState ) => ({ ...prevState, [typeInput]: e.target.value }));
-  // };
   const handleOnFocus = () => {
     setIsInvalid([]);
   };

@@ -3,25 +3,12 @@ import { useEffect, useState } from 'react';
 import { database } from '../FireBase/config';
 import { ref, onValue, get } from 'firebase/database';
 
-interface ConversationType {
-  type: 'group' | 'private';
-  groupName?: string;
-  members: string[];
-  lastMessage: string;
-  lastTimestamp: number;
-}
+import {
+  ConversationType,
+  ConversationWithId,
+  UIConversationItem,
+} from '../types';
 
-interface ConversationWithId extends ConversationType {
-  id: string;
-}
-interface UIConversationItem {
-  id: string;
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
-  lastMessage: string;
-  lastTimestamp: number;
-}
 interface Props {
   currentUserId: string;
   onSelect: (userId: string) => void;
@@ -54,7 +41,7 @@ const Conversation = ({ currentUserId, onSelect, setCond }: Props) => {
             if (conv.type === 'group') {
               return {
                 id: conv.id,
-                participantId: conv.id, // Hoặc dùng groupId nếu có riêng
+                participantId: conv.id,
                 participantName: conv.groupName || 'Group',
                 participantAvatar: 'group_default.png', // nếu có
                 lastMessage: conv.lastMessage,
@@ -94,14 +81,7 @@ const Conversation = ({ currentUserId, onSelect, setCond }: Props) => {
   return (
     <div className="p-1">
       {conversations.map((item, index) => (
-        <ConversationItem
-          item={item}
-          participantId={item.participantId}
-          message={item.lastMessage}
-          name={item.participantName}
-          key={index}
-          handleSelect={handleSelect}
-        />
+        <ConversationItem item={item} key={index} handleSelect={handleSelect} />
       ))}
     </div>
   );

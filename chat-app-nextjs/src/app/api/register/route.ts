@@ -51,12 +51,14 @@ export async function POST(req: NextRequest) {
     initSequelize();
     const { email, password, avatar } = await req.json();
 
-    console.log(email, password);
 
     if (email && password) {
         const hashedPassword = await bcrypt.hash(password, 10); // 10 là salt rounds
         const id = crypto.randomUUID();
+            console.log("id",id);
+
         const existingUser = await Users.findOne({ where: { email } });
+            console.log("existingUser",existingUser);
 
         if (existingUser) {
           return NextResponse.json(
@@ -84,6 +86,7 @@ export async function POST(req: NextRequest) {
             withAuthToken: true,
           }),
         });
+            console.log("response comet",response);
 
         const data = await response.json();
         console.log('data', data);
@@ -99,6 +102,8 @@ export async function POST(req: NextRequest) {
             createdAt: new Date(),
             updatedAt: new Date(),
           });
+                      console.log(" newUser",newUser);
+
           return NextResponse.json(
             { message: 'User created', user: newUser, ok: true },
             {
@@ -106,6 +111,7 @@ export async function POST(req: NextRequest) {
               headers: corsHeaders,
             }
           );
+          
         } else {
           return NextResponse.json(
             { message: 'Register chat account fail!', ok: false },

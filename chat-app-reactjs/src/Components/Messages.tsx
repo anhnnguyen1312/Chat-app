@@ -1,65 +1,54 @@
 import { useEffect, useState } from 'react';
 import { database } from '../FireBase/config';
 import { ref, onValue, push, set, update, get } from 'firebase/database';
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
-}
-interface ConversationType {
-  type: 'group' | 'private';
-  groupName?: string;
-  members: string[];
-  lastMessage: string;
-  lastTimestamp: number;
-}
-interface UIConversationItem {
-  id: string;
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
-  lastMessage: string;
-  lastTimestamp: number;
-}
+import { ConversationType, Message, UIConversationItem, User } from '../types';
 interface Props {
   currentUser: User;
   otherUser: User;
   cond: UIConversationItem;
 }
-
-interface Message {
-  senderId: string;
-  senderName: string;
-  senderAvatar: string;
-  text: string;
-  timestamp: number;
-}
 const Messages = ({ currentUser, otherUser, cond }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
+  const [converOtherId, setConverOtherId] = useState<string>('');
+
+  console.log('messages', messages);
   useEffect(() => {
-    if (!cond.id) {
-      setMessages([]);
+    if (cond) {
+      const messagesRef = ref(database, `messages/${cond.id}`);
 
-      return;
+      const unsubscribe = onValue(messagesRef, (snapshot) => {
+        const data = snapshot.val();
+
+        if (data) {
+          const list = Object.values(data) as Message[];
+          list.sort((a, b) => a.timestamp - b.timestamp);
+
+          setMessages(list);
+        } else {
+          setMessages([]);
+        }
+      });
+
+      return () => unsubscribe();
+    } else if (converOtherId) {
+      const messagesRef = ref(database, `messages/${converOtherId}`);
+
+      const unsubscribe = onValue(messagesRef, (snapshot) => {
+        const data = snapshot.val();
+
+        if (data) {
+          const list = Object.values(data) as Message[];
+          list.sort((a, b) => a.timestamp - b.timestamp);
+
+          setMessages(list);
+        } else {
+          setMessages([]);
+        }
+      });
+
+      return () => unsubscribe();
     }
-
-    const messagesRef = ref(database, `messages/${cond.id}`);
-
-    const unsubscribe = onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-
-      if (data) {
-        const list = Object.values(data) as Message[];
-        list.sort((a, b) => a.timestamp - b.timestamp);
-
-        setMessages(list);
-      } else {
-        setMessages([]);
-      }
-    });
-
-    return () => unsubscribe();
   }, [cond]);
   const sendMessage = async () => {
     if (!text.trim()) return;
@@ -93,19 +82,22 @@ const Messages = ({ currentUser, otherUser, cond }: Props) => {
     } else if (otherUser.id) {
       const sortedIds = [currentUser.id, otherUser.id].sort();
       const convoId = `${sortedIds[0]}_${sortedIds[1]}`;
-      const convoRef = ref(database, `conversations/${convoId}`);
-      const convoSnap = await get(convoRef);
+      if (!converOtherId) {
+        const convoRef = ref(database, `conversations/${convoId}`);
+        const convoSnap = await get(convoRef);
 
-      if (!convoSnap.exists()) {
-        // Tạo conversation mới
-        const newConvo: ConversationType = {
-          type: 'private',
-          members: sortedIds,
-          lastMessage: text,
-          lastTimestamp: timestamp,
-        };
+        if (!convoSnap.exists()) {
+          // Tạo conversation mới
+          const newConvo: ConversationType = {
+            type: 'private',
+            members: sortedIds,
+            lastMessage: text,
+            lastTimestamp: timestamp,
+          };
 
-        await update(ref(database, `conversations/${convoId}`), newConvo);
+          await update(ref(database, `conversations/${convoId}`), newConvo);
+          setConverOtherId(convoId);
+        }
       }
 
       const messagesRef = ref(database, `messages/${convoId}`);
@@ -158,7 +150,7 @@ const Messages = ({ currentUser, otherUser, cond }: Props) => {
           </div>
           <div className="flex-grow p-2">
             <div className="text-md text-gray-50 font-semibold">
-              {otherUser.name}
+              {otherUser.name || cond.participantName}
             </div>
             <div className="flex items-center">
               <div className="w-2 h-2 bg-green-300 rounded-full"></div>

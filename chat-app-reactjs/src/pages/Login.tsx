@@ -135,7 +135,7 @@ export default function Login({ cometChat }: LoginProps) {
     const postDataRegister = async () => {
       try {
         const urlHost = 'https://chat-app-arud.onrender.com/api/register';
-        // const urlLocal = 'http://localhost:3000/api/register';
+        //const urlLocal = 'http://localhost:3000/api/register';
 
         const response = await fetch(urlHost, {
           method: 'POST',
@@ -189,7 +189,7 @@ export default function Login({ cometChat }: LoginProps) {
     const postDataLogin = async () => {
       try {
         const urlHost = 'https://chat-app-arud.onrender.com/api/login';
-        // const urlLocal = 'http://localhost:3000/api/login';
+        //const urlLocal = 'http://localhost:3000/api/login'
 
         const response = await fetch(urlHost, {
           method: 'POST',
